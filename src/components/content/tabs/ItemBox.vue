@@ -1,0 +1,109 @@
+<template>
+  <div class="itemBox">
+    <div class='item-container' v-for="(item, index) of itemList" :key="index" @mousedown="drag(item, $event)">
+        <img :src="item.url" class="material">
+        <p>{{item.materialName}}</p>
+    </div>
+    <img class="clone" :style="clone" :src='cloneUrl'/>
+  </div>
+</template>
+
+<script>
+import Tool from 'utils/tool.js'
+export default {
+  data() {
+    return {
+      itemList: [{
+          url: require('assets/1.jpg'),
+          materialName: '1.jpg'
+        }, {
+          url: require('assets/2.jpg'),
+          materialName: '2.jpg'
+        }, {
+          url: require('assets/3.jpg'),
+          materialName: '3.jpg'
+        }, {
+          url: require('assets/123.jpg'),
+          materialName: '123.jpg'
+      }],
+      clone: {
+        display: 'none',
+        left: 0,
+        top: 0
+      },
+      cloneUrl: null
+    }
+  },
+  methods: {
+    drag(item, el) {
+      el.preventDefault()
+      const THAT = this
+      THAT.cloneUrl = item.url
+      
+      THAT.clone.left = el.clientX - 50 + 'px'
+      THAT.clone.top = el.clientY - 50 + 'px'
+      THAT.clone.display = 'block'
+
+      document.onmousemove = e => {
+        //用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
+        let left = e.clientX - 50
+        let top = e.clientY - 50
+        //移动当前元素
+        THAT.clone.left = left + 'px'
+        THAT.clone.top = top + 'px'
+      }
+
+      document.onmouseup = e => {
+        const isHover = Tool.checkHover(e, document.querySelector('#canvas'))
+        if(isHover) {
+          THAT.draw(e)
+        }
+        
+        //鼠标弹起来的时候不再移动
+        document.onmousemove = null
+          //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）  
+        document.onmouseup = null
+        THAT.clone.display = 'none'
+      }
+    },
+
+    draw() {
+      console.log(this.$store)
+      // let data = this.$store.getter['program/getData']
+      // console.log(data)
+    }
+  }
+}
+</script>
+
+<style scoped>
+.itemBox img {
+    width: 100px;
+    height: 100px;
+}
+.itemBox {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0 15px;
+}
+.item-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5px;
+}
+.imgbox-container .item-container {
+    padding: 0 5px;
+    border: 2px solid #fff;
+}
+.material {
+    width: 100px;
+    height: 100px;
+    margin: 5px 0;
+}
+.clone {
+  position: fixed;
+  width: 100px;
+  height: 100px;
+}
+</style>
