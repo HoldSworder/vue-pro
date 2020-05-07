@@ -10,6 +10,7 @@
 
 <script>
 import Tool from 'utils/tool.js'
+import element from 'scripts/data/element.js'
 export default {
   data() {
     return {
@@ -42,7 +43,6 @@ export default {
       
       THAT.clone.left = el.clientX - 50 + 'px'
       THAT.clone.top = el.clientY - 50 + 'px'
-      THAT.clone.display = 'block'
 
       document.onmousemove = e => {
         //用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
@@ -51,12 +51,13 @@ export default {
         //移动当前元素
         THAT.clone.left = left + 'px'
         THAT.clone.top = top + 'px'
+        THAT.clone.display = 'block'
       }
 
       document.onmouseup = e => {
         const isHover = Tool.checkHover(e, document.querySelector('#canvas'))
         if(isHover) {
-          THAT.draw(e)
+          THAT.drawCanvas(el)
         }
         
         //鼠标弹起来的时候不再移动
@@ -67,10 +68,13 @@ export default {
       }
     },
 
-    draw() {
-      console.log(this.$store)
-      // let data = this.$store.getter['program/getData']
-      // console.log(data)
+    drawCanvas(el) {
+      console.log(el)
+      let defaultVal = element.Img({
+        imgSrc: el.target.src
+      })
+      this.$store.dispatch('program/putNewItem', defaultVal)
+      console.log(this.$store.getters['program/getData'])
     }
   }
 }

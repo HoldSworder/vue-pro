@@ -38,7 +38,7 @@ export default {
 .container {
   background: #f4f5f5;
   height: 100%;
-  width: 344px;
+  width: 22vw;
 }
 .row-right {
   top: 0px;
