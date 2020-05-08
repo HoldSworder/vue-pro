@@ -15,7 +15,7 @@ export default {
       return result
     },
     getEle: (state, getters) => id => {
-      return getters.filter(x => {
+      return getters.getAllEle.filter(x => {
         return x.id == id
       })
     }
@@ -39,7 +39,10 @@ export default {
         item.elementList.forEach(it => {
           if(it.id === data.id) {
             delete data.id
-            it = {...it, ...data}
+            for (const key in data) {
+              const element = data[key];
+              it[key] = element
+            }
           }
         })
       })

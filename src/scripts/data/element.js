@@ -1,4 +1,4 @@
-import tool from 'utils/tool.js'
+import { genId } from 'utils/tool.js'
 
 const WIDTH = 100
 const HEIGHT = 100
@@ -15,7 +15,7 @@ let defaultVal = {
 
 class Element {
   static Img({x = 0, y = 0, width = WIDTH, height = HEIGHT, imgSrc = ''}) {
-    const id = tool.genId()
+    const id = genId()
     let data = {
       id,
       location_x: x,
@@ -25,7 +25,7 @@ class Element {
       fileName: imgSrc
     }
 
-    let result = {...data, ...defaultVal}
+    let result = {...defaultVal, ...data}
     return result
   }
 }

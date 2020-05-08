@@ -1,8 +1,8 @@
 <template>
   <div id="hiddenBox" :style="hiddenStyle">
     <div :style="{...background, ...size, ...trans}" id="canvas">
-      <div @mousedown="move" :data-i="item.id" v-for="(item, index) in getData" :key="index" class="canvasDiv">
-        <img-ele :dataVal="item"></img-ele>
+      <div @mousedown.prevent="move($event)" :data-i="item.id" v-for="(item, index) in getData" :key="index" >
+        <img-ele class="canvasDiv" :dataVal="item"></img-ele>
       </div>
     </div>
   </div>
@@ -32,36 +32,31 @@ export default {
       hiddenStyle: {
         width: '70vw',
         height: '70vh'
-      }
+      },
     }
   },
   computed: {
     getData() {
-      const data = this.$store.getters['program/getData']
-      let result = []
-
-      data.forEach(item => {
-        result = [...result, ...item.elementList]
-      })
-
-      console.log(result)
-      return result
-    }
+      const data = this.$store.getters['program/getAllEle']
+      return data
+    },
   },
   methods: {
     move(el) {
       const THAT = this
-      const id = el.target.dataSet.id
+      const id = el.currentTarget.dataset.i
+      const target = el.target
       el.preventDefault()
+      console.log(target.offsetTop)
 
       document.onmousemove = e => {
         //用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
-        let left = e.clientX - 50
-        let top = e.clientY - 50
+        // TODO: 移动图片跟手
+        // const rect = target.getBoundingClientRect()
+        let left = e.clientX 
+        let top = e.clientY
         //移动当前元素
-        THAT.clone.left = left + 'px'
-        THAT.clone.top = top + 'px'
-        this.$store.commit('program/CHANGE_DATA', {
+        THAT.$store.commit('program/CHANGE_DATA', {
           id,
           location_x: left,
           location_y: top,

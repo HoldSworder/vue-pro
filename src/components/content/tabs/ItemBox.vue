@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import Tool from 'utils/tool.js'
+import { checkHover } from 'utils/tool.js'
 import element from 'scripts/data/element.js'
 export default {
   data() {
@@ -55,7 +55,7 @@ export default {
       }
 
       document.onmouseup = e => {
-        const isHover = Tool.checkHover(e, document.querySelector('#canvas'))
+        const isHover = checkHover(e, document.querySelector('#canvas'))
         if(isHover) {
           THAT.drawCanvas(el)
         }
@@ -69,12 +69,12 @@ export default {
     },
 
     drawCanvas(el) {
-      console.log(el)
       let defaultVal = element.Img({
-        imgSrc: el.target.src
+        imgSrc: el.target.src,
+        width: el.target.naturalWidth,
+        height: el.target.naturalHeight
       })
       this.$store.dispatch('program/putNewItem', defaultVal)
-      console.log(this.$store.getters['program/getData'])
     }
   }
 }

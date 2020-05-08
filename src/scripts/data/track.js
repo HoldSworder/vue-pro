@@ -1,8 +1,8 @@
-import tool from 'utils/tool.js'
+import { genId } from 'utils/tool.js'
 
 class Track {
   static newTrack() {
-    const id = tool.genId()
+    const id = genId()
     let result = {
       name,
       id,
