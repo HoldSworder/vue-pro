@@ -9,7 +9,7 @@ let defaultVal = {
   location_x: 0,
   location_y: 0,
   beginTime: 0,
-  endTime: 60,
+  endTime: 300,
   scalingRatio: 100
 }
 
