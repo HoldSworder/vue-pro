@@ -13,18 +13,18 @@
 
     <tab-select></tab-select>
 
-    <item-box></item-box>
+    <tab-ele></tab-ele>
     </div>
   </div>
 </template>
 
 <script>
 import TabSelect from 'components/content/tabs/TabSelect'
-import ItemBox from 'components/content/tabs/ItemBox'
+import TabEle from 'components/content/tabs/TabEle'
 export default {
   components: {
     TabSelect,
-    ItemBox
+    TabEle
   },
   data() {
     return {

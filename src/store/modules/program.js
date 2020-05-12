@@ -15,9 +15,10 @@ export default {
       return result
     },
     getEle: (state, getters) => id => {
-      return getters.getAllEle.filter(x => {
+      const result = getters.getAllEle.filter(x => {
         return x.id == id
       })
+      return result[0]
     }
   },
   mutations: {
