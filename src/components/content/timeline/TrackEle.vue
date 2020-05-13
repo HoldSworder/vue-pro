@@ -4,7 +4,7 @@
     :data-i="eleData.id"
     @click.self="pickEle"
     ref="nowEle"
-    @mousedown.stop.prevent="move"
+    @mousedown.stop.prevent.self="move"
     :style="{...trackStyle, ...pickStyle}">
       {{eleData.fileName}}
       <div class='eleWidthL eleWidth' @mousedown.stop.prevent="pullUp('left')" v-show="picked"></div>
@@ -15,11 +15,6 @@
 <script>
 export default {
   props: ['eleData'],
-  data() {
-    return {
-      picked: false
-    }
-  },
   computed: {
     duration() {
       return this.$store.getters['common/getDuration']
@@ -46,15 +41,9 @@ export default {
     },
     storeVal() {
       return this.$store.getters['program/getEle'](this.eleData.id)
-    }
-  },
-  watch: {
-    pickId(newVal, oldVal) {
-      if(newVal === this.eleData.id) {
-        this.picked = true
-      }else {
-        this.picked = false
-      }
+    },
+    picked() {
+      return this.$store.state.common.pickId === this.eleData.id
     }
   },
   methods: {
@@ -72,28 +61,22 @@ export default {
       document.onmousemove = (e) => {
         const nowX = e.clientX
 
-        if(type == 'right') {
+        if(type === 'right') {
           const endTime = (nowX - trackL) / trackW * duration
-          THAT.$store.commit('program/CHANGE_DATA', {
+          THAT.$store.dispatch('program/changeData', {
             id: THAT.eleData.id,
             endTime
           })
         }else {
           const beginTime = (nowX - trackL) / trackW * duration
-          const oldEndtime = THAT.storeVal.endTime
-          const endTime = (oldEndtime - beginTime) / trackW * duration
-          THAT.$store.commit('program/CHANGE_DATA', {
+          THAT.$store.dispatch('program/changeData', {
             id: THAT.eleData.id,
-            beginTime,
-            endTime
+            beginTime
           })
         }
       }
 
       document.onmouseup = (e) => {
-        e.preventDefault()
-        e.stopPropagation()
-
         document.onmousemove = null
         document.onmouseup = null
       }
@@ -112,10 +95,15 @@ export default {
       document.onmousemove = e => {
         const nowX = e.clientX 
 
-        const beginTime = (nowX - trackRect.left - gapW) / trackRect.width * duration
-        const endTime = beginTime + gapTime
+        let beginTime = (nowX - trackRect.left - gapW) / trackRect.width * duration
+        let endTime = beginTime + gapTime
+
+        if(beginTime <= 0) {  //避免超出轨道
+          beginTime = 0
+          endTime = 0 + gapTime
+        }
         
-        THAT.$store.commit('program/CHANGE_DATA', {
+        THAT.$store.dispatch('program/changeData', {
           id,
           beginTime,
           endTime
@@ -123,9 +111,7 @@ export default {
       }
 
       document.onmouseup = e => {
-        //鼠标弹起来的时候不再移动
         document.onmousemove = null
-          //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）  
         document.onmouseup = null
       }
     }

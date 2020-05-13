@@ -1,6 +1,6 @@
 <template>
   <div id="hiddenBox" :style="hiddenStyle">
-    <div :style="{...background, ...size, ...trans}" id="canvas">
+    <div :style="{...background, ...size, }" id="canvas">
       <canvas-ele class="canvasDiv" :eleData='item' :data-i="item.id" v-for="(item, index) in getData" :key="index"></canvas-ele>
     </div>
   </div>
@@ -8,7 +8,7 @@
 
 <script>
 import backUrl from "assets/display_min.jpg"
-import canvasEle from 'components/content/canvas/CanvasEle'
+import canvasEle from 'components/content/canvas/canvasEle'
 export default {
   components: {
     canvasEle
@@ -19,10 +19,6 @@ export default {
         backgroundImage: `url(${backUrl})`,
         backgroundRepeat: 'repeat',
         backgroundSize: 'auto'
-      },
-      size: {
-        width: '1920px',
-        height: '1080px'
       },
       trans: {
         transform: 'scale(0.8, 0.8)'
@@ -35,9 +31,15 @@ export default {
   },
   computed: {
     getData() {
-      const data = this.$store.getters['program/getAllEle']
-      return data
+      return this.$store.getters['program/getAllEle']
     },
+    size() {
+      const proData = this.$store.getters['program/getProData']
+      return {
+        width: proData.width + 'px',
+        height: proData.height + 'px'
+      }
+    }
   }
 }
 </script>
@@ -45,9 +47,13 @@ export default {
 <style scoped>
 #canvas {
   transform-origin: 0px 0px;
+  position: relative;
 }
 #hiddenBox {
   overflow: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .canvasDiv {

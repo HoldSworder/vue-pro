@@ -52,14 +52,13 @@
 </template>
 
 <script>
-import trackEle from 'components/content/timeline/TrackEle'
+import trackEle from 'components/content/timeline/trackEle'
 export default {
   components: {
     trackEle
   },
   computed: {
     tracks () {
-      console.log(this.$store.getters['program/getData'])
       return this.$store.getters['program/getData']
     },
     trackNum () {
@@ -77,6 +76,9 @@ export default {
 
 <style scoped>
 .timeLineBox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: fixed;
   bottom: 0;
   width: 100%;

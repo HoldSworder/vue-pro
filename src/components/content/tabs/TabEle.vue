@@ -75,6 +75,7 @@ export default {
         height: el.target.naturalHeight
       })
       this.$store.dispatch('program/putNewItem', defaultVal)
+      console.log(this.$store.getters['program/getData'])
     }
   }
 }
