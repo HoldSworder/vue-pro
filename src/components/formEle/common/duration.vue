@@ -20,7 +20,7 @@
         style="width: 100%"
         v-model="beginTime"
         :picker-options="{
-          selectableRange: '18:30:00 - 20:30:00'
+          selectableRange: beginRange
         }"
         placeholder="起始时间">
       </el-time-picker>
@@ -31,8 +31,7 @@
         style="width: 100%"
         v-model="endTime"
         :picker-options="{
-          minTime: endTime,
-          maxTime: maxTime
+          selectableRange: endRange
         }"
         placeholder="结束时间">
       </el-time-picker>
@@ -57,10 +56,12 @@ export default {
     storeVal() {
       return this.$store.getters['program/getEle'](this.pickId)
     },
-    maxTime() {
-      // const result = new Date(2020, 5, 14, ...formatSeconds(this.$store.getters['common/getDuration']).split(':'))
-      // const result = formatSeconds(this.$store.getters['common/getDuration'])
-      return '01:00:00'
+    beginRange() {
+      return `00:00:00 - ${this.endTime}`
+    },
+    endRange() {
+      const maxTime = formatSeconds(this.$store.getters['common/getDuration'])
+      return `${this.beginTime} - ${maxTime}`
     }
   },
   watch: {
@@ -74,7 +75,7 @@ export default {
       })
     },
     endTime(val) {
-      const endTime = formatToS(String(val[1]).slice(16, 24))
+      const endTime = formatToS(String(val).slice(16, 24))
       this.$store.dispatch('program/changeData', {
         ...{
           endTime
