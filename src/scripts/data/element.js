@@ -15,9 +15,8 @@ let defaultVal = {
 }
 
 class Element {
-  static Img({x = 0, y = 0, width = WIDTH, height = HEIGHT, imgSrc = ''}) {
+  static Image({x = 0, y = 0, width = WIDTH, height = HEIGHT, imgSrc = '', natural = {}}) {
     const id = genId()
-    // const natural = await getNatural(imgSrc)
     let data = {
       id,
       location_x: x,
@@ -25,8 +24,8 @@ class Element {
       width,
       height,
       fileName: imgSrc,
-      elementType: typeIndex.indexOf('图片') + 1,
-      // natural
+      elementType: typeIndex.indexOf('Image') + 1,
+      natural
     }
     
     let result = {...defaultVal, ...data}

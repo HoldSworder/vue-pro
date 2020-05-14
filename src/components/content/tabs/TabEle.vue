@@ -69,13 +69,18 @@ export default {
     },
 
     drawCanvas(el) {
-      let defaultVal = element.Img({
-        imgSrc: el.target.src,
-        width: el.target.naturalWidth,
-        height: el.target.naturalHeight
+      const { src, naturalWidth, naturalHeight } = el.target
+      let defaultVal = element.Image({
+        imgSrc: src,
+        width: naturalWidth,
+        height: naturalHeight,
+        natural: {
+          width: naturalWidth,
+          height: naturalHeight,
+          ratio: naturalWidth / naturalHeight
+        }
       })
       this.$store.dispatch('program/putNewItem', defaultVal)
-      console.log(this.$store.getters['program/getData'])
     }
   }
 }

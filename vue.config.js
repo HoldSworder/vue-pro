@@ -7,7 +7,8 @@ module.exports = {
         'pages': '@/pages',
         'utils': '@/utils',
         'store': '@/store',
-        'scripts': '@/scripts'
+        'scripts': '@/scripts',
+        'style': '@/style'
       }
     }
   }

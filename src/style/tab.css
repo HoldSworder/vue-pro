@@ -1,0 +1,11 @@
+.tabContainer {
+  background: #f4f5f5;
+  height: 100vh;
+  width: 290px;
+  border-width: 1px 1px 1px;
+  border-style: none solid solid;
+  border-color: rgb(203, 207, 210) rgb(203, 207, 210) rgb(203, 207, 210);
+  border-image: initial;
+  padding: 0px;
+  border-top: none;
+}

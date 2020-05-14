@@ -1,6 +1,6 @@
 <template>
-  <div class="row-left container">
-    <image-form v-if="isShow('图片')"></image-form>
+  <div class="row-left tabContainer">
+    <image-form v-if="isShow('Image')"></image-form>
   </div>
 </template>
 
@@ -29,17 +29,5 @@ export default {
 </script>
 
 <style scoped> 
-.container {
-  background: #f4f5f5;
-  height: 100vh;
-  width: 290px;
-}
-.row-left {
-  border-width: 1px 1px 1px;
-  border-style: none solid solid;
-  border-color: rgb(203, 207, 210) rgb(203, 207, 210) rgb(203, 207, 210);
-  border-image: initial;
-  padding: 0px;
-  border-top: none;
-}
+@import '~style/tab.css';
 </style>

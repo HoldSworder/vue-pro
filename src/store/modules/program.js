@@ -46,8 +46,14 @@ export default {
     }
   },
   actions: {
-    putNewItem({ commit }, ele) {
+    putNewItem({ commit, getters }, ele) {
       let track = Track.newTrack()
+      const proData = getters.getProData
+
+      for (const key in ele) {
+        ele[key] = fix(key, ele[key], ele, proData)
+      }
+
       track.elementList.push(ele)
       commit('PUSH_TRACK', track)
     },
@@ -66,6 +72,26 @@ export default {
         })
       })
 
+    },
+    delItem({ state }, id) {
+      let track, eleIndex, trackIndex
+
+      state.data.forEach((item, inx) => {
+        item.elementList.forEach((it, ind) => {
+          if(it.id === id) {
+            track = item
+            eleIndex = ind
+            trackIndex = inx
+          }
+        })
+      })
+
+      if(!track) return
+      if(track.elementList.length === 1) {
+        state.data.splice(trackIndex, 1)
+      }else {
+        track.elementList.splice(eleIndex, 1)
+      }
     }
   }
 }
@@ -85,6 +111,11 @@ function fix(key, data, own, proData) {
   switch(key) {
     case 'beginTime':
       if(data <= 0) return 0
+      data = Math.floor(data)
+      break
+
+    case 'endTime':
+      data = Math.floor(data)
       break
 
     case 'location_x':
@@ -93,6 +124,7 @@ function fix(key, data, own, proData) {
       }else if((data + width) >= canvasW) {
         return canvasW - width
       }
+      data = Math.floor(data)
       break
 
     case 'location_y':
@@ -101,6 +133,7 @@ function fix(key, data, own, proData) {
       }else if((data + height) >= canvasH) {
         return canvasH - height
       }
+      data = Math.floor(data)
       break
 
     case 'width':
@@ -109,6 +142,7 @@ function fix(key, data, own, proData) {
       }else if((data + location_x) >= canvasW) {
         return canvasW - location_x
       }
+      data = Math.floor(data)
       break
 
     case 'height':
@@ -117,18 +151,35 @@ function fix(key, data, own, proData) {
       }else if((data + location_y) >= canvasH) {
         return canvasH - location_y
       }
+      data = Math.floor(data)
       break
 
-    // case 'scalingRatio':
-    //   ratio('change', data, own)
-    //   break
+    case 'scalingRatio':
+      data = ratio(data, own, proData)
+      data = Math.floor(data)
+      break
   }
 
   return data
 }
 
-// function ratio(type, data, own) {
-//   if(type === 'change') {
-    
-//   }
-// }
+function ratio(data, own, proData) {
+  const { location_x, location_y } = own
+  const canvasW = proData.width
+  const canvasH = proData.height
+  let newW = own.natural.width * data / 100
+  let newH = own.natural.height * data / 100
+
+  if(newW + location_x > canvasW) {
+    newW = canvasW - location_x
+    data = newW / own.natural.width * 100
+  }
+  if(newH + location_y > canvasH) {
+    newH = canvasH - location_y
+    data = newH / own.natural.height  * 100
+  }
+
+  own.width = newW
+  own.height = newH
+  return data
+}

@@ -14,6 +14,8 @@ import CustomCanvas from 'components/body/Canvas'
 import CustomTab from 'components/body/Tab'
 import TimeLine from 'components/body/TimeLine'
 import DataBase from 'components/body/Database'
+
+import keyboardEvent from 'scripts/event/keyboard.js'
 export default {
   components: {
     CustomCanvas,
@@ -22,9 +24,14 @@ export default {
     DataBase
   },
   mounted() {
+    const THAT = this
     this.$store.commit('program/SET_PRODATA', {
       width: 600,
       height: 600
+    })
+
+    document.addEventListener('keydown', e => {
+      keyboardEvent(e, THAT.$store)
     })
   }
 }
