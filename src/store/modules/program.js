@@ -4,6 +4,7 @@ import proDefault from 'scripts/data/common'
 export default {
   namespaced: true,
   state: {
+    background: '',
     data: [],
     proData: {...proDefault}
   },
@@ -22,7 +23,8 @@ export default {
       })
       return result[0]
     },
-    getProData: state => state.proData
+    getProData: state => state.proData,
+    getBackground: state => state.background
   },
   mutations: {
     SET_DATA(state, data) {
@@ -43,21 +45,24 @@ export default {
         const element = data[key]
         state.proData[key] = element
       }
+    },
+    SET_BACKGROUND: (state, background) => {
+      state.background = background
     }
   },
   actions: {
-    putNewItem({ commit, getters }, ele) {
+    putNewItem({ commit, getters, rootGetters }, ele) {
       let track = Track.newTrack()
       const proData = getters.getProData
 
       for (const key in ele) {
-        ele[key] = fix(key, ele[key], ele, proData)
+        ele[key] = fix(key, ele[key], ele, proData, { rootGetters })
       }
 
       track.elementList.push(ele)
       commit('PUSH_TRACK', track)
     },
-    changeData({ state, getters }, data) {
+    changeData({ state, getters, rootGetters }, data) {
       const { getProData } = getters
 
       state.data.forEach(item => {
@@ -65,7 +70,7 @@ export default {
           if(it.id === data.id) { //通过id找到state
             delete data.id
             for (const key in data) {
-              const element = fix(key, data[key], it, getProData);
+              const element = fix(key, data[key], it, getProData, { rootGetters });
               it[key] = element
             }
           }
@@ -103,22 +108,26 @@ export default {
  * @param {object} own 该元素属性
  * @param {object} proData 共用属性 包含画布基本参数
  */
-function fix(key, data, own, proData) {
+function fix(key, data, own, proData, { rootGetters }) {
   const { width, height, location_x, location_y } = own
   const canvasW = proData.width
   const canvasH = proData.height
 
   switch(key) {
-    case 'beginTime':
+    case 'beginTime': {
       if(data <= 0) return 0
       data = Math.floor(data)
       break
+    }
 
-    case 'endTime':
+    case 'endTime': {
+      const duration = rootGetters['common/getDuration']
+      if(data >= duration) data = duration
       data = Math.floor(data)
       break
+    }
 
-    case 'location_x':
+    case 'location_x': {
       if(data <= 0) {
         return 0
       }else if((data + width) >= canvasW) {
@@ -126,8 +135,9 @@ function fix(key, data, own, proData) {
       }
       data = Math.floor(data)
       break
+    }
 
-    case 'location_y':
+    case 'location_y': {
       if(data <= 0) {
         return 0
       }else if((data + height) >= canvasH) {
@@ -135,8 +145,9 @@ function fix(key, data, own, proData) {
       }
       data = Math.floor(data)
       break
+    }
 
-    case 'width':
+    case 'width': {
       if(data <= 0) {
         return 0
       }else if((data + location_x) >= canvasW) {
@@ -144,8 +155,9 @@ function fix(key, data, own, proData) {
       }
       data = Math.floor(data)
       break
+    }
 
-    case 'height':
+    case 'height': {
       if(data <= 0) {
         return 0
       }else if((data + location_y) >= canvasH) {
@@ -153,11 +165,13 @@ function fix(key, data, own, proData) {
       }
       data = Math.floor(data)
       break
+    }
 
-    case 'scalingRatio':
+    case 'scalingRatio': {
       data = ratio(data, own, proData)
       data = Math.floor(data)
       break
+    }
   }
 
   return data

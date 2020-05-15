@@ -1,22 +1,29 @@
 <template>
-  <div id="hiddenBox" :style="hiddenStyle">
-    <div :style="{...background, ...size, }" id="canvas">
-      <canvas-ele class="canvasDiv" :eleData='item' :data-i="item.id" v-for="(item, index) in getData" :key="index"></canvas-ele>
+  <div id="hiddenBox"
+       :style="hiddenStyle">
+    <div :style="{...background, ...size}"
+         id="canvas">
+      <canvas-ele class="canvasDiv"
+                  :eleData='item'
+                  :data-i="item.id"
+                  v-show="isShow(item)"
+                  v-for="(item, index) in getData"
+                  :key="index"></canvas-ele>
     </div>
   </div>
 </template>
 
 <script>
-import backUrl from "assets/display_min.jpg"
+import defaultBackUrl from "assets/display_min.jpg"
 import canvasEle from 'components/content/canvas/canvasEle'
 export default {
   components: {
     canvasEle
   },
-  data() {
+  data () {
     return {
       background: {
-        backgroundImage: `url(${backUrl})`,
+        backgroundImage: `url(${defaultBackUrl})`,
         backgroundRepeat: 'repeat',
         backgroundSize: 'auto'
       },
@@ -30,15 +37,40 @@ export default {
     }
   },
   computed: {
-    getData() {
+    getData () {
       return this.$store.getters['program/getAllEle']
     },
-    size() {
+    size () {
       const proData = this.$store.getters['program/getProData']
       return {
         width: proData.width + 'px',
         height: proData.height + 'px'
       }
+    },
+    nowTime() {
+      return this.$store.getters['common/getNowTime']
+    }
+  },
+  watch: {
+    '$store.state.program.background'(val) {
+      console.log(val)
+      if (val !== '') {
+        this.background.backgroundImage = `url(${val})`
+        this.background.backgroundRepeat = 'no-repeat'
+        this.background.size = '100% 100%'
+      } else {
+        this.background.backgroundImage = `url(${defaultBackUrl})`,
+          this.background.backgroundRepeat = 'repeat',
+          this.background.backgroundSize = 'auto'
+      }
+    }
+  },
+  methods: {
+    isShow(data) {
+      const { beginTime, endTime } = data
+      const { nowTime } = this
+      if(nowTime >= beginTime && nowTime <= endTime) return true
+      return false
     }
   }
 }

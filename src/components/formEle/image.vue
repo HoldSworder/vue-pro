@@ -1,36 +1,23 @@
 <template>
   <div id="formBox">
-    <duration-form></duration-form>
-    <el-form label-width="50px" label-position='left'>
-      <el-form-item label="X轴">
-        <el-input @input="changeStore($event, 'location_x')" v-model="storeVal.location_x"></el-input>
-      </el-form-item>
-      <el-form-item label="Y轴">
-        <el-input @input="changeStore($event, 'location_y')" v-model="storeVal.location_y"></el-input>
-      </el-form-item>
-      <el-form-item label="宽">
-        <el-input @input="changeStore($event, 'width')" v-model="storeVal.width"></el-input>
-      </el-form-item>
-      <el-form-item label="高">
-        <el-input @input="changeStore($event, 'height')" v-model="storeVal.height"></el-input>
-      </el-form-item>
-      <el-form-item label="缩放">
-        <el-slider @input="changeStore($event, 'scalingRatio')" v-model="storeVal.scalingRatio" :max="500" :min="0"></el-slider>
+    <form-basic></form-basic>
+    <el-form label-width="80px" label-position='left'>
+      <el-form-item label="设为背景">
+        <el-switch v-model="isBackground"></el-switch>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
-import durationForm from 'components/formEle/common/duration'
+import formBasic from 'components/formEle/common/basic'
 export default {
   components: {
-    durationForm
+    formBasic
   },
   data() {
     return {
-      cloneVal: '',
-      onceFlag: true
+      isBackground: false
     }
   },
   computed: {
@@ -41,19 +28,11 @@ export default {
       return this.$store.getters['program/getEle'](this.pickId)
     }
   },
-  methods: {
-    changeStore(e, key) {
-      if(this.onceFlag) return
-      console.log('change', key, e)
-      this.$store.dispatch('program/changeData', {
-        ...{[key]: e},
-        ...{id: this.pickId}
-      })
-      this.onceFlag = false
+  watch: {
+    isBackground(val) {
+      if(val) this.$store.commit('program/SET_BACKGROUND', this.storeVal.fileName)
+      else this.$store.commit('program/SET_BACKGROUND', '')
     }
-  },
-  mounted() {
-    this.cloneVal = {...this.storeVal}
   }
 }
 </script>
