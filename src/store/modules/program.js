@@ -20,11 +20,23 @@ export default {
     getEle: (state, getters) => id => {
       const result = getters.getAllEle.filter(x => {
         return x.id == id
-      })
-      return result[0]
+      })[0]
+      return result
     },
     getProData: state => state.proData,
-    getBackground: state => state.background
+    getBackground: state => state.background,
+    getEleParentId: (state, getters) => id => {
+      if(id === '') return
+      let result
+      getters.getData.forEach(item => {
+        item.elementList.forEach(it => {
+          if(it.id === id) {
+            result = item
+          }
+        })
+      })
+      return result
+    }
   },
   mutations: {
     SET_DATA(state, data) {
@@ -122,7 +134,11 @@ function fix(key, data, own, proData, { rootGetters }) {
 
     case 'endTime': {
       const duration = rootGetters['common/getDuration']
-      if(data >= duration) data = duration
+      if(data >= duration) {
+        console.log(data - duration)
+        own.beginTime = own.beginTime - (data - duration)
+        data = duration
+      }
       data = Math.floor(data)
       break
     }

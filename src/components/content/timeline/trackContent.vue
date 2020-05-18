@@ -1,37 +1,50 @@
 <template>
   <div class="trackBox">
-        <div class="track clearfix"
-             v-for="(item) in tracks"
-             :key="item.id">
-          <div class="trackController">
-            <span>轨道</span>
-            <!-- <span class="glyphicon glyphicon glyphicon-align-justify"
-                  aria-hidden="true"></span> -->
-          </div>
-          <div :data-i="item.id"
-               class="trackContent">
-            <track-ele v-for="(ite, index) in item.elementList" :key="index" :eleData="ite"></track-ele>
-          </div>
-        </div>
+    <div class="track clearfix"
+         v-for="(item) in tracks"
+         :key="item.id">
+      <div class="trackController">
+        <span>轨道</span>
+      </div>
+      <div :data-i="item.id"
+           @mousemove.self="moveEle"
+           :class="{isCover: item.id === pickTrackId}"
+           class="trackContent">
+        <track-ele @mousedown.stop.prevent.self="move($event, ite)"
+                   v-for="(ite, index) in item.elementList"
+                   :key="index"
+                   :eleData="ite"></track-ele>
+        <div class="cloneBox"
+             ref="cloneBox"
+             v-show="cloneShow && item.id === pickTrackId"></div>
+      </div>
+    </div>
 
-        <div class="trackSeize clearfix"
-             v-for="(item, index) in trackNum"
-             :key="index">
-          <div class="trackController">
-            <span></span>
-
-          </div>
-          <div class="trackContent"></div>
-        </div>
+    <div class="trackSeize clearfix"
+         v-for="(item, index) in trackNum"
+         :key="index">
+      <div class="trackController">
+        <span></span>
 
       </div>
+      <div class="trackContent"></div>
+    </div>
+
+  </div>
 </template>
 
 <script>
 import trackEle from 'components/content/timeline/trackEle'
+// import { checkHover } from 'utils/tool.js'
 export default {
   components: {
     trackEle
+  },
+  data () {
+    return {
+      cloneShow: false,
+      pickTrackId: ''
+    }
   },
   computed: {
     tracks () {
@@ -42,10 +55,56 @@ export default {
       const l = 4 - len
       return l >= 0 ? l : 0
     },
-    
+    pickMoveId () {
+      return this.$store.getters['common/getPickMoveId']
+    },
+    // pickMoveTrackId() {
+    //   const pickTrack = this.$store.getters['program/getEleParentId'](this.pickMoveId)
+    //   return pickTrack ? pickTrack.id : null
+    // }
   },
+  watch: {
+    pickMoveId (val) {
+      if (val === '') return
+      document.addEventListener('mousemove', this.move())
+
+      document.addEventListener('mouseup', e => {
+        this.pickTrackId = ''
+        document.removeEventListener('mousemove', this.move)
+      })
+    }
+  },
+  methods: {
+    move (e) {
+      this.cloneShow = true
+      const cloneBox = document.querySelector('.cloneBox')
+      const { pickMoveId } = this
+      const pickDom = [...document.querySelectorAll('.silderBlock')].filter(item => {
+        return item.dataset.i === pickMoveId
+      })[0]
+      cloneBox.innerHTML = ''
+      cloneBox.appendChild(pickDom.cloneNode(true))
+    },
+    moveEle(e) {
+      const { pickMoveId } = this
+      if(pickMoveId === '') return
+      const { target } = e
+      const children = [...target.childNodes]
+      const include = children.find(item => {
+        return item.dataset.i === this.pickMoveId
+      })
+
+      if(include) return
+      this.pickTrackId = target.dataset.i
+    }
+  }
 }
 </script>
+
+
+
+
+
 
 <style scoped>
 .trackBox .clearfix:last-child .trackController {
@@ -86,5 +145,11 @@ export default {
 }
 .clearfix {
   display: flex;
+}
+.cloneBox {
+  position: absolute;
+}
+.isCover {
+  background: aquamarine
 }
 </style>

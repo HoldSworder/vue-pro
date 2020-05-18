@@ -92,7 +92,7 @@ export default {
       const gapW = el.clientX - eleRect.left  //鼠标点击位置至元素左侧的差值
       const gapTime = this.storeVal.endTime - this.storeVal.beginTime   //缓存持续时长
 
-      this.$store.commit('common/SET_PICKMOVETRACKELE', id)
+      this.$store.commit('common/SET_PICKMOVEID', id)
 
       document.onmousemove = e => {
         const nowX = e.clientX 
@@ -116,7 +116,7 @@ export default {
         document.onmousemove = null
         document.onmouseup = null
 
-        this.$store.commit('common/SET_PICKMOVETRACKELE', id)
+        this.$store.commit('common/SET_PICKMOVEID', '')
       }
     }
   }

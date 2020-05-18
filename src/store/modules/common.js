@@ -4,13 +4,13 @@ export default {
     duration: 3600,  //60分钟
     pickId: 0,
     nowTime: 0,
-    pickMoveTrackEle: ''
+    pickMoveId: ''
   },
   getters: {
     getDuration: state => state.duration,
     getPickId: state => state.pickId,
     getNowTime: state => state.nowTime,
-    getPickMoveTrackEle: state => state.pickMoveTrackEle
+    getPickMoveId: state => state.pickMoveId
   },
   mutations: {
     SET_DURATION: (state, duration) => {
@@ -22,8 +22,8 @@ export default {
     SET_NOWTIME: (state, nowTime) => {
       state.nowTime = nowTime
     },
-    SET_PICKMOVETRACKELE: (state, pickMoveTrackEle) => {
-      state.pickMoveTrackEle = pickMoveTrackEle
+    SET_PICKMOVEID: (state, pickMoveId) => {
+      state.pickMoveId = pickMoveId
     }
   }
 }
