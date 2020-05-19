@@ -16,6 +16,7 @@
                    :eleData="ite"></track-ele>
         <div class="cloneBox"
              ref="cloneBox"
+             :style="{left: cloneLeft}"
              v-show="cloneShow && item.id === pickTrackId"></div>
       </div>
     </div>
@@ -42,8 +43,9 @@ export default {
   },
   data () {
     return {
-      cloneShow: false,
-      pickTrackId: ''
+      cloneShow: true,
+      pickTrackId: '',
+      cloneLeft: 0
     }
   },
   computed: {
@@ -75,36 +77,36 @@ export default {
     }
   },
   methods: {
-    move (e) {
-      this.cloneShow = true
-      const cloneBox = document.querySelector('.cloneBox')
-      const { pickMoveId } = this
-      const pickDom = [...document.querySelectorAll('.silderBlock')].filter(item => {
-        return item.dataset.i === pickMoveId
-      })[0]
-      cloneBox.innerHTML = ''
-      cloneBox.appendChild(pickDom.cloneNode(true))
+    move (e) {  //轨道内移动轨道元素  延期
+      // this.cloneShow = true
+      // const cloneBox = document.querySelectorAll('.cloneBox')
+      // const { pickMoveId } = this
+      // const pickDom = [...document.querySelectorAll('.silderBlock')].filter(item => {
+      //   return item.dataset.i === pickMoveId
+      // })[0]
+      
+      // cloneBox.forEach(item => {
+      //   item.innerHTML = ''
+      //   item.appendChild(pickDom.cloneNode(true))
+      // })
     },
-    moveEle(e) {
-      const { pickMoveId } = this
-      if(pickMoveId === '') return
-      const { target } = e
-      const children = [...target.childNodes]
-      const include = children.find(item => {
-        return item.dataset.i === this.pickMoveId
-      })
+    moveEle(e) {  //轨道内移动轨道元素  延期
+      // const { pickMoveId } = this
+      // console.log('move')
+      // if(pickMoveId === '') return
+      // const { target } = e
+      // const children = [...target.childNodes]
+      // const include = children.find(item => {
+      //   return item.dataset.i === this.pickMoveId
+      // })
 
-      if(include) return
-      this.pickTrackId = target.dataset.i
+      // if(include) return
+      // this.pickTrackId = target.dataset.i
+      // this.cloneLeft = e.clientX + 'px'
     }
   }
 }
 </script>
-
-
-
-
-
 
 <style scoped>
 .trackBox .clearfix:last-child .trackController {

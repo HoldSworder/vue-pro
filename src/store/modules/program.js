@@ -135,7 +135,6 @@ function fix(key, data, own, proData, { rootGetters }) {
     case 'endTime': {
       const duration = rootGetters['common/getDuration']
       if(data >= duration) {
-        console.log(data - duration)
         own.beginTime = own.beginTime - (data - duration)
         data = duration
       }
