@@ -10,7 +10,7 @@
 
 <script>
 import { checkHover } from 'utils/tool.js'
-import element from 'scripts/data/element.js'
+import Element from 'scripts/data/element.js'
 export default {
   data() {
     return {
@@ -55,9 +55,12 @@ export default {
       }
 
       document.onmouseup = e => {
-        const isHover = checkHover(e, document.querySelector('#canvas'))
-        if(isHover) {
+        const isHoverCanvas = checkHover(e, document.querySelector('#canvas'))
+        const isHoverTrack = checkHover(e, document.querySelector('.trackBox'))
+        if(isHoverCanvas) {
           THAT.drawCanvas(el)
+        }else if(isHoverTrack) {
+          THAT.drawTrack(el, e)
         }
         
         //鼠标弹起来的时候不再移动
@@ -70,7 +73,7 @@ export default {
 
     drawCanvas(el) {
       const { src, naturalWidth, naturalHeight } = el.target
-      let defaultVal = element.Image({
+      let defaultVal = Element.Image({
         imgSrc: src,
         width: naturalWidth,
         height: naturalHeight,
@@ -81,6 +84,31 @@ export default {
         }
       })
       this.$store.dispatch('program/putNewItem', defaultVal)
+    },
+
+    drawTrack(el, e) {
+      let targetTrack
+      const trackContent = document.querySelectorAll('.trackContent')
+      trackContent.forEach(item => {
+        if(checkHover(e, item)) targetTrack = item
+      })
+      const { src, naturalWidth, naturalHeight } = el.target
+      const eleData = Element.Image({
+        imgSrc: src,
+        width: naturalWidth,
+        height: naturalHeight,
+        natural: {
+          width: naturalWidth,
+          height: naturalHeight,
+          ratio: naturalWidth / naturalHeight
+        }
+      })
+      const trackId = targetTrack.dataset.i
+      console.log(trackId)
+      this.$store.dispatch('program/addEleToTrack', {
+        trackId,
+        eleData
+      })
     }
   }
 }
@@ -115,5 +143,6 @@ export default {
   position: fixed;
   width: 100px;
   height: 100px;
+  z-index: 99;
 }
 </style>

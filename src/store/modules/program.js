@@ -19,13 +19,19 @@ export default {
     },
     getEle: (state, getters) => id => {
       const result = getters.getAllEle.filter(x => {
-        return x.id == id
+        return x.id === id
+      })[0]
+      return result
+    },
+    getTrack: (state, getters) => id => {
+      const result = getters.getData.filter(item => {
+        return item.id === id
       })[0]
       return result
     },
     getProData: state => state.proData,
     getBackground: state => state.background,
-    getEleParentId: (state, getters) => id => {
+    getEleParentId: (state, getters) => id => {   //寻找指定元素id的轨道信息
       if(id === '') return
       let result
       getters.getData.forEach(item => {
@@ -62,7 +68,8 @@ export default {
       state.background = background
     }
   },
-  actions: {
+  actions: { 
+    //新增元素并新增轨道
     putNewItem({ commit, getters, rootGetters }, ele) {
       let track = Track.newTrack()
       const proData = getters.getProData
@@ -74,6 +81,10 @@ export default {
       track.elementList.push(ele)
       commit('PUSH_TRACK', track)
     },
+    /**
+     * 通过data中的id找到元素并修改值
+     * @param {object} data  包含元素id及需要改变的属性
+     */
     changeData({ state, getters, rootGetters }, data) {
       const { getProData } = getters
 
@@ -90,6 +101,7 @@ export default {
       })
 
     },
+    //删除元素
     delItem({ state }, id) {
       let track, eleIndex, trackIndex
 
@@ -109,6 +121,23 @@ export default {
       }else {
         track.elementList.splice(eleIndex, 1)
       }
+    },
+    /**
+     * 添加元素到指定轨道
+     * @param {{trackId, eleData}} data 包含轨道id及需要添加的元素信息
+     */
+    addEleToTrack({ state, getters, dispatch }, data) {
+      
+      if(!data.trackId) {
+        dispatch('putNewItem', data.eleData)
+        return 
+      }
+
+      let track = getters.getTrack(data.trackId)
+      track.elementList.push(data.eleData)
+      track.elementList.sort((a, b) => {
+        return (Number(a.beginTime) + Number(a.endTime)) - (Number(b.beginTime) + Number(b.endTime))
+      })
     }
   }
 }
@@ -127,12 +156,14 @@ function fix(key, data, own, proData, { rootGetters }) {
 
   switch(key) {
     case 'beginTime': {
+      data = Number(data)
       if(data <= 0) return 0
       data = Math.floor(data)
       break
     }
 
     case 'endTime': {
+      data = Number(data)
       const duration = rootGetters['common/getDuration']
       if(data >= duration) {
         own.beginTime = own.beginTime - (data - duration)
@@ -143,6 +174,7 @@ function fix(key, data, own, proData, { rootGetters }) {
     }
 
     case 'location_x': {
+      data = Number(data)
       if(data <= 0) {
         return 0
       }else if((data + width) >= canvasW) {
@@ -153,6 +185,7 @@ function fix(key, data, own, proData, { rootGetters }) {
     }
 
     case 'location_y': {
+      data = Number(data)
       if(data <= 0) {
         return 0
       }else if((data + height) >= canvasH) {
@@ -163,6 +196,7 @@ function fix(key, data, own, proData, { rootGetters }) {
     }
 
     case 'width': {
+      data = Number(data)
       if(data <= 0) {
         return 0
       }else if((data + location_x) >= canvasW) {
@@ -173,6 +207,7 @@ function fix(key, data, own, proData, { rootGetters }) {
     }
 
     case 'height': {
+      data = Number(data)
       if(data <= 0) {
         return 0
       }else if((data + location_y) >= canvasH) {
@@ -183,6 +218,7 @@ function fix(key, data, own, proData, { rootGetters }) {
     }
 
     case 'scalingRatio': {
+      data = Number(data)
       data = ratio(data, own, proData)
       data = Math.floor(data)
       break

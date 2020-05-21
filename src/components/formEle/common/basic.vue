@@ -5,18 +5,22 @@
              label-position='left'>
       <el-form-item label="X轴">
         <el-input @input="changeStore($event, 'location_x')"
+                  type="number"
                   v-model="storeVal.location_x"></el-input>
       </el-form-item>
       <el-form-item label="Y轴">
         <el-input @input="changeStore($event, 'location_y')"
+                  type="number"
                   v-model="storeVal.location_y"></el-input>
       </el-form-item>
       <el-form-item label="宽">
         <el-input @input="changeStore($event, 'width')"
+                  type="number"
                   v-model="storeVal.width"></el-input>
       </el-form-item>
       <el-form-item label="高">
         <el-input @input="changeStore($event, 'height')"
+                  type="number"
                   v-model="storeVal.height"></el-input>
       </el-form-item>
       <el-form-item label="缩放">
