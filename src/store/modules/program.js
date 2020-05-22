@@ -127,7 +127,6 @@ export default {
      * @param {{trackId, eleData}} data 包含轨道id及需要添加的元素信息
      */
     addEleToTrack({ state, getters, dispatch }, data) {
-      
       if(!data.trackId) {
         dispatch('putNewItem', data.eleData)
         return 
@@ -159,6 +158,7 @@ function fix(key, data, own, proData, { rootGetters }) {
       data = Number(data)
       if(data <= 0) return 0
       data = Math.floor(data)
+      data = fixDuration(key, data, own, rootGetters)
       break
     }
 
@@ -170,6 +170,7 @@ function fix(key, data, own, proData, { rootGetters }) {
         data = duration
       }
       data = Math.floor(data)
+      data = fixDuration(key, data, own, rootGetters)
       break
     }
 
@@ -246,5 +247,37 @@ function ratio(data, own, proData) {
 
   own.width = newW
   own.height = newH
+  return data
+}
+
+function fixDuration(key, data, own, rootGetters) {
+  const { id, beginTime, endTime } = own
+  const trackVal = rootGetters['program/getEleParentId'](id)
+
+  if(!trackVal) return data
+
+  const { elementList } = trackVal
+  const index = elementList.findIndex(item => item.id === id)
+  
+  const before = elementList[index - 1],
+        after = elementList[index + 1]
+
+  const duration = endTime - beginTime
+  
+  //TODO: 轨道计算
+  if(before && after) {
+    console.log('11')
+  }else if(before) {
+    console.log('22')
+  }else if(after) {
+    if(key === 'endTime' && data >= after.beginTime) {
+      console.log('out')
+      own.beginTime = after.beginTime - duration
+      console.log(duration)
+      // console.log(own.beginTime)
+      own.endTime = after.beginTime
+      return after.beginTime
+    }
+  }
   return data
 }

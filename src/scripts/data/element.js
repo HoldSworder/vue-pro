@@ -15,7 +15,7 @@ let defaultVal = {
 }
 
 class Element {
-  static Image({x = 0, y = 0, width = WIDTH, height = HEIGHT, imgSrc = '', natural = {}}) {
+  static Image({x = 0, y = 0, width = WIDTH, height = HEIGHT, imgSrc = '', natural = {}, beginTime = 0}) {
     const id = genId()
     let data = {
       id,
@@ -26,6 +26,10 @@ class Element {
       fileName: imgSrc,
       elementType: typeIndex.indexOf('Image') + 1,
       natural
+    }
+    if(beginTime) {
+      data.beginTime = beginTime
+      data.endTime = beginTime + 300
     }
     
     let result = {...defaultVal, ...data}

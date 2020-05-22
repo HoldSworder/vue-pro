@@ -4,7 +4,7 @@
         <img :src="item.url" class="material">
         <p>{{item.materialName}}</p>
     </div>
-    <img class="clone" :style="clone" :src='cloneUrl'/>
+    <img class="clone" :style="{...clone, ...{filter: isCover ? '': 'contrast(20%)'}}" :src='cloneUrl'/>
   </div>
 </template>
 
@@ -32,7 +32,13 @@ export default {
         left: 0,
         top: 0
       },
+      isCover: false,
       cloneUrl: null
+    }
+  },
+  computed: {
+    duration() {
+      return this.$store.getters['common/getDuration']
     }
   },
   methods: {
@@ -52,6 +58,24 @@ export default {
         THAT.clone.left = left + 'px'
         THAT.clone.top = top + 'px'
         THAT.clone.display = 'block'
+
+        const isHoverCanvas = checkHover(e, document.querySelector('#canvas'))
+        const isHoverTrack = checkHover(e, document.querySelector('.trackBox'))
+
+        let coverFlag = false
+        for (const item of document.querySelectorAll('.trackEle')) {
+          if(checkHover(e, item)) {
+            coverFlag = true
+            break
+          }
+        }
+
+        if((isHoverCanvas || isHoverTrack) && !coverFlag) {
+          console.log('iscover')
+          this.isCover = true
+        }else {
+          this.isCover = false
+        }
       }
 
       document.onmouseup = e => {
@@ -92,11 +116,17 @@ export default {
       trackContent.forEach(item => {
         if(checkHover(e, item)) targetTrack = item
       })
+
+      const { left, width } = document.querySelector('.trackContent').getBoundingClientRect()
+      const leftGap = e.clientX - left
+      const begin = leftGap / width * this.duration - 150
+
       const { src, naturalWidth, naturalHeight } = el.target
       const eleData = Element.Image({
         imgSrc: src,
         width: naturalWidth,
         height: naturalHeight,
+        beginTime: begin,
         natural: {
           width: naturalWidth,
           height: naturalHeight,

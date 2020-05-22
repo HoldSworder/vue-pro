@@ -1,5 +1,5 @@
 <template>
-  <div class="silderBlock"
+  <div class="trackEle"
     :data-J='JSON.stringify(eleData)'
     :data-i="eleData.id"
     @click.self="pickEle"
@@ -124,7 +124,7 @@ export default {
 </script>
 
 <style scoped>
-.silderBlock {
+.trackEle {
   box-shadow: 0px 0px 3px #888888;
   background-color: white;
   height: 30px;

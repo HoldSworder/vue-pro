@@ -81,7 +81,7 @@ export default {
       // this.cloneShow = true
       // const cloneBox = document.querySelectorAll('.cloneBox')
       // const { pickMoveId } = this
-      // const pickDom = [...document.querySelectorAll('.silderBlock')].filter(item => {
+      // const pickDom = [...document.querySelectorAll('.trackEle')].filter(item => {
       //   return item.dataset.i === pickMoveId
       // })[0]
       
