@@ -51,10 +51,9 @@ export default {
       THAT.clone.top = el.clientY - 50 + 'px'
 
       document.onmousemove = e => {
-        //用鼠标的位置减去鼠标相对元素的位置，得到元素的位置
         let left = e.clientX - 50
         let top = e.clientY - 50
-        //移动当前元素
+        
         THAT.clone.left = left + 'px'
         THAT.clone.top = top + 'px'
         THAT.clone.display = 'block'
@@ -87,9 +86,7 @@ export default {
           THAT.drawTrack(el, e)
         }
         
-        //鼠标弹起来的时候不再移动
         document.onmousemove = null
-          //预防鼠标弹起来后还会循环（即预防鼠标放上去的时候还会移动）  
         document.onmouseup = null
         THAT.clone.display = 'none'
       }

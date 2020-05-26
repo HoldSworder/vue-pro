@@ -9,33 +9,47 @@ function keyboardEvent(e, store) {
       break
     }
 
-    case 37: {
+    case 37: {  //左
       let pickId = store.getters['common/getPickId']
       if(pickId === 0) return
-      let ele = store.getters['program/getEle']
-      ele.location_x = ele.location_x - 1
-      console.log('left')
+      let ele = store.getters['program/getEle'](pickId)
+      store.dispatch('program/changeData', {
+        id: pickId,
+        location_x: ele.location_x - 1
+      })
       break
     }
 
-    case 38: {
+    case 38: {  //上
       let pickId = store.getters['common/getPickId']
       if(pickId === 0) return
-      console.log('up')
+      let ele = store.getters['program/getEle'](pickId)
+      store.dispatch('program/changeData', {
+        id: pickId,
+        location_y: ele.location_y - 1
+      })
       break
     }
 
-    case 39: {
+    case 39: {  //右
       let pickId = store.getters['common/getPickId']
       if(pickId === 0) return
-      console.log('right')
+      let ele = store.getters['program/getEle'](pickId)
+      store.dispatch('program/changeData', {
+        id: pickId,
+        location_x: ele.location_x + 1
+      })
       break
     }
 
-    case 40: {
+    case 40: {  //下
       let pickId = store.getters['common/getPickId']
       if(pickId === 0) return
-      console.log('down')
+      let ele = store.getters['program/getEle'](pickId)
+      store.dispatch('program/changeData', {
+        id: pickId,
+        location_y: ele.location_y + 1
+      })
       break
     }
   }

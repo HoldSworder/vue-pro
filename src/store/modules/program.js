@@ -229,6 +229,7 @@ function fix(key, data, own, proData, { rootGetters }) {
   return data
 }
 
+// 缩放功能
 function ratio(data, own, proData) {
   const { location_x, location_y } = own
   const canvasW = proData.width
@@ -250,8 +251,9 @@ function ratio(data, own, proData) {
   return data
 }
 
+// 轨道元素之间边界事件
 function fixDuration(key, data, own, rootGetters) {
-  const { id, beginTime, endTime } = own
+  const { id } = own
   const trackVal = rootGetters['program/getEleParentId'](id)
 
   if(!trackVal) return data
@@ -262,22 +264,26 @@ function fixDuration(key, data, own, rootGetters) {
   const before = elementList[index - 1],
         after = elementList[index + 1]
 
-  const duration = endTime - beginTime
   
-  //TODO: 轨道计算
   if(before && after) {
-    console.log('11')
+    if(key === 'beginTime' && data <= before.endTime) {
+      own.endTime += (before.endTime - data)
+      data = before.endTime
+    }else if(key === 'endTime' && data >= after.beginTime) {
+      own.beginTime -= (data - after.beginTime)
+      data = after.beginTime
+    }
   }else if(before) {
-    console.log('22')
+    if(key === 'beginTime' && data <= before.endTime) {
+      own.endTime += (before.endTime - data)
+      data = before.endTime
+    }
   }else if(after) {
     if(key === 'endTime' && data >= after.beginTime) {
-      console.log('out')
-      own.beginTime = after.beginTime - duration
-      console.log(duration)
-      // console.log(own.beginTime)
-      own.endTime = after.beginTime
-      return after.beginTime
+      own.beginTime -= (data - after.beginTime)
+      data = after.beginTime
     }
   }
+
   return data
 }
